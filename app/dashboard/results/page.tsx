@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 const places = [
   {
@@ -42,31 +43,26 @@ export default function ResultsPage() {
   const facilities = searchParams.get("facilities")?.split(",") || [];
   const crowdedness = searchParams.get("crowdedness")?.split(",") || [];
 
-  // 🔍 FILTER ENGINE (FIXED)
   const filtered = useMemo(() => {
     return places.filter((p) => {
-      const matchQuery =
-        !query || p.name.toLowerCase().includes(query);
+      const matchQuery = !query || p.name.toLowerCase().includes(query);
 
       const matchFacilities =
         facilities.length === 0 ||
         facilities.every((f) =>
-          p.tags
-            .map((t) => t.toLowerCase())
-            .includes(f.toLowerCase())
+          p.tags.map((t) => t.toLowerCase()).includes(f.toLowerCase()),
         );
 
       const matchCrowd =
         crowdedness.length === 0 ||
         crowdedness.some(
-          (c) => p.crowdedness.toLowerCase() === c.toLowerCase()
+          (c) => p.crowdedness.toLowerCase() === c.toLowerCase(),
         );
 
       return matchQuery && matchFacilities && matchCrowd;
     });
   }, [query, facilities, crowdedness]);
 
-  // ⚡ AUTO REDIRECT kalau cuma 1 hasil
   useEffect(() => {
     if (filtered.length === 1) {
       router.replace(`/dashboard/card-spot/${filtered[0].slug}`);
@@ -75,13 +71,20 @@ export default function ResultsPage() {
 
   return (
     <div className="min-h-screen bg-[#efefef] px-6 py-8">
-      <h1 className="text-lg font-bold text-[#2f4b2f] mb-4">
-        Search Results
-      </h1>
+      {/* HEADER DENGAN ICON BACK */}
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          onClick={() => router.back()}
+          className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
+        >
+          <ArrowLeft size={20} className="text-[#2f4b2f]" />
+        </button>
+        <h1 className="text-lg font-bold text-[#2f4b2f]">Search Results</h1>
+      </div>
 
       {/* EMPTY STATE */}
       {filtered.length === 0 && (
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-sm italic ml-2">
           No places found. Try adjusting your filters.
         </p>
       )}
@@ -91,14 +94,10 @@ export default function ResultsPage() {
         {filtered.map((place) => (
           <div
             key={place.id}
-            onClick={() =>
-              router.push(`/dashboard/card-spot/${place.slug}`)
-            }
-            className="bg-white p-4 rounded-xl cursor-pointer hover:shadow-sm transition"
+            onClick={() => router.push(`/dashboard/card-spot/${place.slug}`)}
+            className="bg-white p-4 rounded-xl cursor-pointer hover:shadow-sm transition border border-transparent hover:border-[#2f4b2f]/20"
           >
-            <h2 className="font-semibold text-[#2f4b2f]">
-              {place.name}
-            </h2>
+            <h2 className="font-semibold text-[#2f4b2f]">{place.name}</h2>
 
             <p className="text-xs text-gray-500 mt-1">
               {place.tags.join(", ")} • {place.crowdedness}

@@ -26,27 +26,27 @@ export default function LandingPage() {
   const [activeSection, setActiveSection] = useState("explore");
   const [scrolled, setScrolled] = useState(false);
 
-  const menuRef = useRef(null);
-  const hamburgerRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
 
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (
         menuRef.current &&
-        !menuRef.current.contains(e.target) &&
+        !menuRef.current.contains(e.target as Node) &&
         hamburgerRef.current &&
-        !hamburgerRef.current.contains(e.target)
+        !hamburgerRef.current.contains(e.target as Node)
       ) {
         setMobileMenuOpen(false);
       }
     };
 
     const sections = ["explore", "about"];
-    const observers = [];
+    const observers: IntersectionObserver[] = [];
 
     sections.forEach((id) => {
       const el = document.getElementById(id);
@@ -71,13 +71,13 @@ export default function LandingPage() {
     };
   }, []);
 
-  const scrollToSection = (id) => {
+  const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const navLinkClass = (id) =>
+  const navLinkClass = (id: string) =>
     activeSection === id
       ? "relative text-sm font-bold text-[#354e30] after:content-[''] after:block after:mt-0.5 after:border-b-2 after:border-[#354e30] after:scale-x-100 transition-all"
       : "relative text-sm text-[#6b7c6a] hover:text-[#c1697a] transition-all after:content-[''] after:block after:mt-0.5 after:border-b-2 after:border-[#c1697a] after:scale-x-0 hover:after:scale-x-[0.7] after:transition-transform after:duration-100 after:ease-linear";
@@ -196,6 +196,7 @@ export default function LandingPage() {
               </button>
             </div>
           </div>
+
           <div className="relative group h-80">
             <div className="relative w-full h-full rounded-2xl overflow-hidden border border-[#e0dbd4]">
               <Image
@@ -222,7 +223,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* URBAN REALITY SECTION */}
+        {/* URBAN REALITY */}
         <div className="bg-[#2d4228] text-white py-20 px-6">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -275,8 +276,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* SOLUTIONS SECTION */}
+      {/* ABOUT SECTION */}
       <section id="about" className="scroll-mt-16">
+        {/* SOLUTIONS */}
         <div className="bg-[#f5f2ee] py-20 px-6">
           <div className="max-w-4xl mx-auto text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold text-[#354e30]">
@@ -338,7 +340,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* QUALITY OF LIFE SECTION */}
+        {/* QUALITY OF LIFE */}
         <section className="relative bg-[#f5f2ee] overflow-hidden min-h-[500px] flex items-center">
           <div className="relative z-30 max-w-6xl mx-auto px-6 w-full">
             <div className="grid md:grid-cols-2">
@@ -395,7 +397,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* CTA SECTION (Start finding your) */}
+        {/* CTA */}
         <div className="bg-[#f5f2ee] py-20 px-6">
           <div className="max-w-6xl mx-auto bg-[#2d4228] rounded-[2.5rem] p-12 md:p-20 text-center text-white">
             <h2 className="text-3xl md:text-5xl font-bold leading-tight">
