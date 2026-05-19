@@ -41,7 +41,6 @@ export default function ProfilePage() {
     router.push("/");
   };
 
-  // Komponen Avatar Tanpa Border dan Shadow
   const AvatarBox = ({
     sizeClasses,
     textClass,
@@ -101,7 +100,6 @@ export default function ProfilePage() {
         <div className="mt-8">
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-6">
-              {/* Avatar Tanpa Border & Shadow */}
               <AvatarBox
                 sizeClasses="w-[120px] h-[120px]"
                 textClass="text-4xl"
@@ -117,7 +115,6 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex flex-col items-end gap-3">
-              {/* Icon Settings Tanpa Circle Frame, Hanya Ganti Warna Saat Hover */}
               <button className="p-1 transition-colors duration-300 text-[#1f2937] hover:text-[#c1697a]">
                 <UserCog size={28} />
               </button>

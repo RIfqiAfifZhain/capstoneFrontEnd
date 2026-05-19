@@ -1,0 +1,94 @@
+{
+  "gowork-fatmawati": {
+    "name": "GoWork Fatmawati",
+    "image": "/gowork.png",
+    "type": "Coworking Space",
+    "rating": 4.8,
+    "ratingIcon": "/beaming-black.png",
+    "mapLink": "https://www.google.com/maps?q=gowork+fatmawati",
+    "description": "A commercial workspace with premium amenities. It's perfect if you need a highly reliable internet connection and a work environment surrounded by other professionals.",
+    "tags": ["Indoor", "Quiet", "Group", "Alone", "Focused", "Low"],
+    "hours": [
+      { "day": "Mon - Fri", "hours": "8 AM - 8 PM", "closed": false },
+      { "day": "Sat", "hours": "9 AM - 10 PM", "closed": false },
+      { "day": "Sun", "hours": "Closed", "closed": true }
+    ]
+  },
+  "foreword-library": {
+    "name": "ForeWord Library",
+    "image": "/foreword.png",
+    "type": "Library",
+    "rating": 4.8,
+    "ratingIcon": "/beaming-black.png",
+    "mapLink": "https://www.google.com/maps?q=foreword+library",
+    "description": "A private library with a cozy and stylish atmosphere. This place is designed to maintain a peaceful environment, making it perfect for those who need to concentrate fully.",
+    "tags": ["Indoor", "Low", "Quiet", "Alone", "Focused"],
+    "hours": [
+      { "day": "Tue - Fri", "hours": "11 AM - 7:30 PM", "closed": false },
+      { "day": "Sat", "hours": "9 AM - 5 PM", "closed": false },
+      { "day": "Sun - Mon", "hours": "Closed", "closed": true }
+    ]
+  },
+  "urban-forest-cipete": {
+    "name": "Urban Forest Cipete",
+    "image": "/urbanforest.png",
+    "type": "Park",
+    "rating": 4.6,
+    "ratingIcon": "/beaming-black.png",
+    "mapLink": "https://www.google.com/maps?q=urban+forest+cipete",
+    "description": "A lush green open space in the heart of the city. Perfect for those who are tired of being indoors and want to get some work done in a relaxed atmosphere.",
+    "tags": ["Outdoor", "High", "Busy", "Group", "Relaxed"],
+    "hours": [{ "day": "Sun - Sat", "hours": "7 AM - 10 PM", "closed": false }]
+  },
+  "dialogue-artspace": {
+    "name": "Dia.Lo.Gue Artspace",
+    "image": "/dialogue.png",
+    "type": "Cafe, Art Gallery",
+    "rating": 4.5,
+    "ratingIcon": "/smiley-black.png",
+    "mapLink": "https://www.google.com/maps?q=dialogue+artspace",
+    "description": "A contemporary art gallery featuring an iconic all-white minimalist interior design. The atmosphere is professional yet relaxed, making it the perfect spot for inspiration.",
+    "tags": ["Indoor", "Low", "Quiet", "Alone", "Focused"],
+    "hours": [
+      { "day": "Mon - Fri", "hours": "11 AM - 8 PM", "closed": false },
+      { "day": "Sat - Sun", "hours": "8 AM - 8 PM", "closed": false }
+    ]
+  },
+  "erasmus-huis": {
+    "name": "Erasmus Huis",
+    "image": "/erasmus.png",
+    "type": "Cultural Center",
+    "rating": 4.8,
+    "ratingIcon": "/beaming-black.png",
+    "mapLink": "https://www.google.com/maps?q=erasmus+huis+jakarta",
+    "description": "A Dutch cultural center library with a minimalist, all-white interior design. The atmosphere is very cool, quiet, and gives off a professional vibe.",
+    "tags": ["Indoor", "Quiet", "Alone", "Focused", "Low"],
+    "hours": [
+      { "day": "Tue - Fri", "hours": "10 AM - 5 PM", "closed": false },
+      { "day": "Sat", "hours": "10 AM - 3 PM", "closed": false },
+      { "day": "Sun - Mon", "hours": "Closed", "closed": true }
+    ]
+  },
+  "tebet-eco-park": {
+    "name": "Tebet Eco Park",
+    "image": "/tebet.png",
+    "type": "Park",
+    "rating": 4.7,
+    "ratingIcon": "/beaming-black.png",
+    "mapLink": "https://www.google.com/maps?q=tebet+eco+park",
+    "description": "Perfect for those who want to clear their minds in the heart of the city, take a leisurely stroll among the trees, or simply sit back and enjoy the serene atmosphere.",
+    "tags": ["Outdoor", "Relaxed", "Group", "High"],
+    "hours": [{ "day": "Sun - Sat", "hours": "6 AM - 10 PM", "closed": false }]
+  },
+  "taman-cempaka": {
+    "name": "Taman Cempaka",
+    "image": "/cempaka.png",
+    "type": "Park",
+    "rating": 4.6,
+    "ratingIcon": "/smiley-black.png",
+    "mapLink": "https://www.google.com/maps?q=taman+cempaka+jakarta",
+    "description": "Perfect for work done in a relaxed atmosphere while enjoying the fresh air under the shade of lush trees.",
+    "tags": ["Outdoor", "Relaxed", "Alone", "Low"],
+    "hours": [{ "day": "Sun - Sat", "hours": "6 AM - 9 PM", "closed": false }]
+  }
+}
