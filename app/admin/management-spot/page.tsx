@@ -410,7 +410,7 @@ function DeleteModal({
             style={{
               flex: 1,
               padding: "13px",
-              borderRadius: "12px",
+              borderRadius: "7px",
               border: "none",
               backgroundColor: "#FDECEA",
               color: "#C0392B",
@@ -433,7 +433,7 @@ function DeleteModal({
             style={{
               flex: 1,
               padding: "13px",
-              borderRadius: "12px",
+              borderRadius: "7px",
               border: "none",
               backgroundColor: "#8B1A1A",
               color: "#fff",

@@ -144,7 +144,6 @@ export default function DashboardPage() {
   }, [router]);
 
   const handleSearchExecute = () => {
-    // VALIDASI: Jika tidak mengetik kata kunci DAN tidak memilih filter apapun, batalkan pencarian
     if (
       !searchQuery.trim() &&
       selectedFacilities.length === 0 &&
@@ -153,7 +152,6 @@ export default function DashboardPage() {
       return;
     }
 
-    // Memfilter data berdasarkan inputan dan tag filter yang dipilih
     const matchedSlugs = allPlaces
       .filter((place) => {
         const tagsLower = place.tags.map((t: string) => t.toLowerCase());
@@ -178,7 +176,6 @@ export default function DashboardPage() {
       })
       .map((p) => p.slug);
 
-    // Menyusun query parameter URL untuk halaman results
     const params = new URLSearchParams();
     if (searchQuery) params.set("q", searchQuery);
     if (selectedFacilities.length)
@@ -187,7 +184,6 @@ export default function DashboardPage() {
       params.set("crowdedness", selectedCrowdedness.join(","));
     if (matchedSlugs.length) params.set("slugs", matchedSlugs.join(","));
 
-    // Tutup modal pencarian dan selalu arahkan langsung ke halaman hasil (results)
     setIsSearchOpen(false);
     router.push(`/dashboard/results?${params.toString()}`);
   };
@@ -558,7 +554,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <style jsx global>{`
+      <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
         }

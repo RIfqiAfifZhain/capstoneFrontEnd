@@ -5,8 +5,7 @@ import { ArrowLeft, Bookmark, Clock, ArrowRight } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
-// ── DATA DAFTAR REVIEW ──
-const reviewsData = [
+const initialReviews = [
   {
     id: 1,
     name: "Aisyah Rahma",
@@ -24,7 +23,6 @@ const reviewsData = [
   },
 ];
 
-// ── DATA EMOJI ──
 const emojis = [
   {
     val: 1,
@@ -53,13 +51,20 @@ const emojis = [
   },
 ];
 
-function ReviewModal({ onClose }: { onClose: () => void }) {
+function ReviewModal({
+  onClose,
+  onSubmit,
+}: {
+  onClose: () => void;
+  onSubmit: (text: string) => void;
+}) {
   const [rating, setRating] = useState<number | null>(null);
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = () => {
     if (!rating || !text.trim()) return;
+    onSubmit(text.trim());
     setSubmitted(true);
   };
 
@@ -90,11 +95,7 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
                 <button
                   key={e.val}
                   onClick={() => setRating(e.val)}
-                  className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
-                    rating === e.val
-                      ? "scale-125 opacity-100"
-                      : "opacity-40 hover:opacity-70"
-                  }`}
+                  className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${rating === e.val ? "scale-125 opacity-100" : "opacity-40 hover:opacity-70"}`}
                 >
                   <Image
                     src={rating === e.val ? e.srcColor : e.src}
@@ -157,6 +158,7 @@ export default function SpotDetailPage() {
   const [loading, setLoading] = useState(true);
   const [showReview, setShowReview] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [reviews, setReviews] = useState(initialReviews);
 
   useEffect(() => {
     fetch("/data/places.json")
@@ -180,8 +182,10 @@ export default function SpotDetailPage() {
     const stored = localStorage.getItem("bookmarks");
     const bookmarks = stored ? JSON.parse(stored) : [];
     if (isBookmarked) {
-      const updated = bookmarks.filter((b: any) => b.slug !== slug);
-      localStorage.setItem("bookmarks", JSON.stringify(updated));
+      localStorage.setItem(
+        "bookmarks",
+        JSON.stringify(bookmarks.filter((b: any) => b.slug !== slug)),
+      );
       setIsBookmarked(false);
     } else {
       localStorage.setItem(
@@ -190,6 +194,15 @@ export default function SpotDetailPage() {
       );
       setIsBookmarked(true);
     }
+  };
+
+  const handleNewReview = (text: string) => {
+    const newReview = {
+      id: Date.now(),
+      name: localStorage.getItem("username") || "Aisyah Rahma",
+      text,
+    };
+    setReviews((prev) => [newReview, ...prev]);
   };
 
   if (loading)
@@ -213,7 +226,6 @@ export default function SpotDetailPage() {
         backgroundColor: "#FBF2F3",
       }}
     >
-      {/* HERO SECTION */}
       <div className="relative w-full h-[260px]">
         <Image
           src={place.image}
@@ -257,7 +269,15 @@ export default function SpotDetailPage() {
       </div>
 
       <div className="max-w-2xl mx-auto px-5 pb-20 pt-5">
-        {showReview && <ReviewModal onClose={() => setShowReview(false)} />}
+        {showReview && (
+          <ReviewModal
+            onClose={() => setShowReview(false)}
+            onSubmit={(text) => {
+              handleNewReview(text);
+              setShowReview(false);
+            }}
+          />
+        )}
 
         <div className="flex items-start justify-between">
           <h1 className="text-[2rem] font-bold text-[#2f4b2f] leading-tight tracking-tight">
@@ -337,13 +357,13 @@ export default function SpotDetailPage() {
         </div>
 
         <div className="flex flex-col gap-3">
-          {reviewsData.map((review) => (
+          {reviews.map((review) => (
             <div
               key={review.id}
               className="bg-white rounded-[24px] p-4 shadow-sm flex gap-3 items-start border border-gray-50"
             >
-              <div className="w-10 h-10 rounded-full bg-[#c5a98e] flex items-center justify-center text-white text-xs font-bold">
-                A
+              <div className="w-10 h-10 rounded-full bg-[#c5a98e] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                {review.name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1">
                 <p className="font-bold text-[13px] text-[#2f4b2f]">

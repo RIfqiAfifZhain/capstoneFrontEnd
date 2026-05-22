@@ -54,8 +54,17 @@ function AuthCard({
     e.preventDefault();
     setLoading(true);
 
-    const endpoint = isSignUp ? "/auth/user/register" : "/auth/user/login";
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+    // Menentukan endpoint API Swagger secara dinamis berdasarkan input email
+    let endpoint = "";
+    const isAdminEmail = email.toLowerCase().includes("admin");
+
+    if (isSignUp) {
+      endpoint = isAdminEmail ? "/auth/admin/register" : "/auth/user/register";
+    } else {
+      endpoint = isAdminEmail ? "/auth/admin/login" : "/auth/user/login";
+    }
 
     const payload = {
       ...(isSignUp && { username }),
@@ -78,15 +87,27 @@ function AuthCard({
         alert(isSignUp ? "Registrasi Berhasil!" : "Login Berhasil!");
 
         if (!isSignUp) {
-          // Mengecek lokasi token secara fleksibel
           const token = result.token || result.data?.token;
+          const storedName = result.username || result.data?.username;
 
           if (token) {
             localStorage.setItem("token", token);
           }
+          if (storedName) {
+            localStorage.setItem("username", storedName);
+          }
+          if (email) {
+            localStorage.setItem("email", email);
+          }
 
-          // Redirect dijalankan tanpa menunggu pengecekan token yang kaku
-          router.push("/dashboard");
+          // Menyimpan penanda hak akses (role) ke localStorage berdasarkan endpoint yang ditembak
+          if (isAdminEmail) {
+            localStorage.setItem("role", "admin");
+            router.push("/admin");
+          } else {
+            localStorage.setItem("role", "user");
+            router.push("/dashboard");
+          }
         } else {
           setIsSignUp(false);
         }
@@ -157,7 +178,7 @@ function AuthCard({
         </button>
       </form>
 
-      <p className="text-center text-sm mt-4 text-[#354e30]">
+      <div className="text-center text-sm mt-4 text-[#354e30]">
         {isSignUp ? (
           <>
             Have an account?{" "}
@@ -179,7 +200,7 @@ function AuthCard({
             </span>
           </>
         )}
-      </p>
+      </div>
     </div>
   );
 }
