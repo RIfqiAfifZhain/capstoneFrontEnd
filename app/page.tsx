@@ -130,7 +130,7 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/auth"
-              className="text-sm font-medium bg-[#c1697a] text-white px-4 sm:px-5 py-2 rounded-full hover:bg-[#a8576a] transition"
+              className="text-sm font-semibold bg-[#354e30] text-white px-5 py-2 rounded-lg hover:bg-[#2a3d25] transition-all duration-200 shadow-sm"
             >
               Sign Up
             </Link>
@@ -187,11 +187,11 @@ export default function LandingPage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/auth"
-                className="flex items-center gap-2 bg-[#c1697a] text-white px-6 py-2.5 rounded-full font-medium hover:bg-[#a8576a] transition-all text-sm"
+                className="flex items-center gap-2 bg-[#354e30] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-[#2a3d25] transition-all duration-200 text-sm shadow-sm"
               >
                 Get Started <ArrowRight className="w-4 h-4" />
               </Link>
-              <button className="flex items-center gap-2 border border-[#c1697a] text-[#c1697a] px-6 py-2.5 rounded-full font-medium hover:bg-[#c1697a] hover:text-white transition-all text-sm">
+              <button className="flex items-center gap-2 border border-[#354e30] text-[#354e30] px-6 py-2.5 rounded-lg font-semibold hover:bg-[#354e30] hover:text-white transition-all duration-200 text-sm">
                 <Play className="w-4 h-4" /> Watch the Demo
               </button>
             </div>
@@ -400,12 +400,12 @@ export default function LandingPage() {
         {/* CTA */}
         <div className="bg-[#f5f2ee] py-20 px-6">
           <div className="max-w-6xl mx-auto bg-[#2d4228] rounded-[2.5rem] p-12 md:p-20 text-center text-white">
-            <h2 className="text-3xl md:text-5xl font-bold leading-tight">
+            <h2 className="text-3xl md:text-5xl font-semibold leading-tight">
               Start finding your
               <br />
               <span className="text-[#c1697a]">perfect spot</span> today.
             </h2>
-            <p className="mt-6 text-[#a8c49e] text-lg leading-relaxed max-w-xl mx-auto">
+            <p className="mt-6 text-[#a8c49e] text-base leading-relaxed max-w-xl mx-auto">
               Join thousands of other city dwellers who have
               <br />
               found their sanctuary at Pojok Teduh.
@@ -413,11 +413,11 @@ export default function LandingPage() {
             <div className="mt-10 flex flex-wrap gap-4 justify-center">
               <Link
                 href="/auth"
-                className="bg-[#c1697a] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-[#a8576a] transition-all shadow-lg shadow-[#c1697a]/20"
+                className="bg-[#1a2e18] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-[#111f10] transition-all duration-200 shadow-md text-sm"
               >
                 Sign Up Now
               </Link>
-              <button className="border border-[#c1697a] text-[#c1697a] px-8 py-3.5 rounded-full font-semibold hover:bg-[#c1697a] hover:text-white transition-all">
+              <button className="bg-white/90 text-[#2d4228] px-6 py-2.5 rounded-lg font-semibold hover:bg-white transition-all duration-200 shadow-md text-sm">
                 Contact Us
               </button>
             </div>

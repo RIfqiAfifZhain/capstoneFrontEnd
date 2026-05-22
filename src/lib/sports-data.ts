@@ -22,14 +22,15 @@ export const spots: Spot[] = [
     image: "/gowork.png",
     rating: 4.8,
     ratingEmoji: "😁",
-    shortDesc: "Commercial workspace with premium amenities and reliable internet.",
+    shortDesc:
+      "Commercial workspace with premium amenities and reliable internet.",
     fullDesc:
       "A commercial workspace with premium amenities. It's perfect if you need a highly reliable internet connection and a work environment surrounded by other professionals.",
     tags: ["Indoor", "Quiet", "Group", "Alone", "Focused", "Low"],
     operatingHours: [
-      { day: "Mon – Fri", hours: "8 AM – 8 PM",   closed: false },
-      { day: "Sat",       hours: "9 AM – 10 PM",  closed: false },
-      { day: "Sun",       hours: "Closed",         closed: true  },
+      { day: "Mon – Fri", hours: "8 AM – 8 PM", closed: false },
+      { day: "Sat", hours: "9 AM – 10 PM", closed: false },
+      { day: "Sun", hours: "Closed", closed: true },
     ],
   },
   {
@@ -45,8 +46,8 @@ export const spots: Spot[] = [
     tags: ["Indoor", "Low", "Quiet", "Alone", "Focused"],
     operatingHours: [
       { day: "Tue – Fri", hours: "11 AM – 7:30 PM", closed: false },
-      { day: "Sat",       hours: "9 AM – 5 PM",     closed: false },
-      { day: "Sun – Mon", hours: "Closed",           closed: true  },
+      { day: "Sat", hours: "9 AM – 5 PM", closed: false },
+      { day: "Sun – Mon", hours: "Closed", closed: true },
     ],
   },
   {
@@ -71,13 +72,14 @@ export const spots: Spot[] = [
     image: "/dialogue.png",
     rating: 4.5,
     ratingEmoji: "😊",
-    shortDesc: "Contemporary art gallery with iconic all-white minimalist interior.",
+    shortDesc:
+      "Contemporary art gallery with iconic all-white minimalist interior.",
     fullDesc:
       "A contemporary art gallery featuring an iconic all-white minimalist interior design. The atmosphere is professional yet relaxed, making it the perfect spot for those who want to read, work on assignments, or simply seek inspiration among the artworks.",
     tags: ["Indoor", "Low", "Quiet", "Alone", "Focused"],
     operatingHours: [
       { day: "Mon – Fri", hours: "11 AM – 8 PM", closed: false },
-      { day: "Sat – Sun", hours: "8 AM – 8 PM",  closed: false },
+      { day: "Sat – Sun", hours: "8 AM – 8 PM", closed: false },
     ],
   },
 ];

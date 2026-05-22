@@ -41,6 +41,7 @@ export default function ProfilePage() {
     router.push("/");
   };
 
+  // Komponen Avatar Tanpa Border dan Shadow
   const AvatarBox = ({
     sizeClasses,
     textClass,
@@ -100,6 +101,7 @@ export default function ProfilePage() {
         <div className="mt-8">
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-6">
+              {/* Avatar Tanpa Border & Shadow */}
               <AvatarBox
                 sizeClasses="w-[120px] h-[120px]"
                 textClass="text-4xl"
@@ -115,10 +117,11 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex flex-col items-end gap-3">
+              {/* Icon Settings Tanpa Circle Frame, Hanya Ganti Warna Saat Hover */}
               <button className="p-1 transition-colors duration-300 text-[#1f2937] hover:text-[#c1697a]">
                 <UserCog size={28} />
               </button>
-              <button className="flex items-center gap-2 bg-[#2f4b2f] text-white text-sm font-bold px-6 py-3 rounded-2xl hover:bg-[#3d6b3d] transition-all shadow-lg active:scale-95">
+              <button className="flex items-center gap-2 bg-[#2f4b2f] text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-[#3d6b3d] transition-all">
                 <Pencil size={14} />
                 Edit Profile
               </button>
@@ -163,7 +166,7 @@ export default function ProfilePage() {
         <div className="mt-10 flex justify-end pb-16">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 border-2 border-[#A36065] text-[#A36065] text-sm font-bold px-6 py-3 rounded-2xl hover:bg-[#A36065] hover:text-white transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-2 border-2 border-[#2f4b2f] text-[#2f4b2f] text-sm font-bold px-6 py-3 rounded-lg hover:bg-[#2f4b2f] hover:text-white transition-all duration-200 shadow-sm active:scale-95"
           >
             <LogOut size={16} />
             Logout

@@ -112,7 +112,6 @@ export default function DashboardPage() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [userInitial, setUserInitial] = useState("A");
 
-  // --- STATE SEARCH MODAL ---
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
@@ -145,22 +144,52 @@ export default function DashboardPage() {
   }, [router]);
 
   const handleSearchExecute = () => {
-    const match = allPlaces.find((p) =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    if (match && searchQuery !== "") {
-      router.push(`/dashboard/card-spot/${match.slug}`);
-      setIsSearchOpen(false);
-    } else {
-      const params = new URLSearchParams();
-      if (searchQuery) params.set("q", searchQuery);
-      if (selectedFacilities.length)
-        params.set("facilities", selectedFacilities.join(","));
-      if (selectedCrowdedness.length)
-        params.set("crowdedness", selectedCrowdedness.join(","));
-      router.push(`/dashboard/results?${params.toString()}`);
-      setIsSearchOpen(false);
+    // VALIDASI: Jika tidak mengetik kata kunci DAN tidak memilih filter apapun, batalkan pencarian
+    if (
+      !searchQuery.trim() &&
+      selectedFacilities.length === 0 &&
+      selectedCrowdedness.length === 0
+    ) {
+      return;
     }
+
+    // Memfilter data berdasarkan inputan dan tag filter yang dipilih
+    const matchedSlugs = allPlaces
+      .filter((place) => {
+        const tagsLower = place.tags.map((t: string) => t.toLowerCase());
+
+        const nameMatch =
+          !searchQuery ||
+          place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          place.type.toLowerCase().includes(searchQuery.toLowerCase());
+
+        const facilityMatch =
+          selectedFacilities.length === 0 ||
+          selectedFacilities.some((f) => {
+            if (f === "Groups") return tagsLower.includes("group");
+            return tagsLower.includes(f.toLowerCase());
+          });
+
+        const crowdMatch =
+          selectedCrowdedness.length === 0 ||
+          selectedCrowdedness.some((c) => tagsLower.includes(c.toLowerCase()));
+
+        return nameMatch && facilityMatch && crowdMatch;
+      })
+      .map((p) => p.slug);
+
+    // Menyusun query parameter URL untuk halaman results
+    const params = new URLSearchParams();
+    if (searchQuery) params.set("q", searchQuery);
+    if (selectedFacilities.length)
+      params.set("facilities", selectedFacilities.join(","));
+    if (selectedCrowdedness.length)
+      params.set("crowdedness", selectedCrowdedness.join(","));
+    if (matchedSlugs.length) params.set("slugs", matchedSlugs.join(","));
+
+    // Tutup modal pencarian dan selalu arahkan langsung ke halaman hasil (results)
+    setIsSearchOpen(false);
+    router.push(`/dashboard/results?${params.toString()}`);
   };
 
   const toggleFilter = (
@@ -260,18 +289,22 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* --- SEARCH MODAL (PERSIS CODE SEARCH) --- */}
+      {/* SEARCH FILTER MODAL */}
       {isSearchOpen && (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 animate-in fade-in duration-300"
           onClick={() => setIsSearchOpen(false)}
         >
           <div
-            className="relative bg-white w-full max-w-2xl rounded-[40px] p-10 shadow-2xl animate-in zoom-in-95 duration-200"
+            className="bg-white rounded-3xl flex flex-col gap-8 shadow-md"
+            style={{
+              width: "660px",
+              padding: "40px 44px 44px 44px",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* SEARCH INPUT */}
-            <div className="relative mb-8">
+            <div className="relative">
               <input
                 type="text"
                 autoFocus
@@ -279,21 +312,21 @@ export default function DashboardPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearchExecute()}
                 placeholder="Find your quiet spot..."
-                className="w-full px-6 py-3 rounded-full bg-[#f5f5f5] text-sm outline-none placeholder:text-gray-400 placeholder:italic"
+                className="w-full px-5 py-3 rounded-full bg-[#f5f5f5] text-sm outline-none placeholder:text-gray-400 placeholder:italic text-gray-800"
               />
               <Search
-                className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400"
-                size={15}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400"
+                size={16}
               />
             </div>
 
             {/* FACILITIES */}
-            <div className="mb-8">
-              <h2 className="text-[14px] font-bold text-[#2f4b2f] mb-3">
+            <div>
+              <h2 className="text-[14px] font-bold text-gray-800 mb-4">
                 Facilities
               </h2>
-              <div className="flex flex-wrap gap-2">
-                {facilitiesOptions.map((item) => (
+              <div className="flex gap-3 mb-3">
+                {facilitiesOptions.slice(0, 4).map((item) => (
                   <button
                     key={item}
                     onClick={() =>
@@ -303,10 +336,31 @@ export default function DashboardPage() {
                         setSelectedFacilities,
                       )
                     }
-                    className={`px-5 py-1.5 rounded-full border text-[12px] transition-all duration-200 ${
+                    className={`flex-1 py-2 rounded-xl border text-[13px] transition-all duration-200 ${
                       selectedFacilities.includes(item)
                         ? "bg-[#354e30] text-white border-[#354e30]"
-                        : "bg-white text-gray-500 border-gray-300"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-[#354e30] hover:text-[#354e30]"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-3">
+                {facilitiesOptions.slice(4, 8).map((item) => (
+                  <button
+                    key={item}
+                    onClick={() =>
+                      toggleFilter(
+                        item,
+                        selectedFacilities,
+                        setSelectedFacilities,
+                      )
+                    }
+                    className={`flex-1 py-2 rounded-xl border text-[13px] transition-all duration-200 ${
+                      selectedFacilities.includes(item)
+                        ? "bg-[#354e30] text-white border-[#354e30]"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-[#354e30] hover:text-[#354e30]"
                     }`}
                   >
                     {item}
@@ -316,11 +370,11 @@ export default function DashboardPage() {
             </div>
 
             {/* CROWDEDNESS */}
-            <div className="mb-10">
-              <h2 className="text-[14px] font-bold text-[#2f4b2f] mb-3">
+            <div>
+              <h2 className="text-[14px] font-bold text-gray-800 mb-4">
                 Crowdedness
               </h2>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 {crowdednessOptions.map((item) => (
                   <button
                     key={item}
@@ -331,10 +385,10 @@ export default function DashboardPage() {
                         setSelectedCrowdedness,
                       )
                     }
-                    className={`px-8 py-1.5 rounded-full border text-[12px] transition-all duration-200 ${
+                    className={`px-12 py-2 rounded-xl border text-[13px] transition-all duration-200 ${
                       selectedCrowdedness.includes(item)
                         ? "bg-[#354e30] text-white border-[#354e30]"
-                        : "bg-white text-gray-500 border-gray-300"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-[#354e30] hover:text-[#354e30]"
                     }`}
                   >
                     {item}
@@ -347,11 +401,11 @@ export default function DashboardPage() {
             <div className="flex justify-end">
               <button
                 onClick={handleSearchExecute}
-                className="group flex items-center gap-2 bg-[#354e30] text-white text-[14px] font-bold px-8 py-2.5 rounded-full hover:opacity-90 transition-all duration-300"
+                className="group flex items-center gap-2 bg-[#354e30] text-white text-[14px] font-semibold px-8 py-3 rounded-lg hover:opacity-90 transition-all duration-300"
               >
                 Search
                 <ArrowRight
-                  size={14}
+                  size={16}
                   className="group-hover:translate-x-1 transition-transform duration-300"
                 />
               </button>

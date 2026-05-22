@@ -68,16 +68,20 @@ export default function BookmarkPage() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-5">
-            {bookmarks.map((place) => (
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+            {bookmarks.map((place, index) => (
               <div
                 key={place.slug}
-                className="w-[230px] bg-white rounded-[20px] shadow-sm p-3.5 cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() =>
                   router.push(`/dashboard/card-spot/${place.slug}`)
                 }
+                className={`flex items-center gap-4 px-5 py-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                  index !== bookmarks.length - 1
+                    ? "border-b border-gray-100"
+                    : ""
+                }`}
               >
-                <div className="relative w-full h-[144px] rounded-[14px] overflow-hidden">
+                <div className="relative w-[60px] h-[60px] rounded-xl overflow-hidden flex-shrink-0">
                   <Image
                     src={place.image}
                     alt={place.name}
@@ -86,24 +90,27 @@ export default function BookmarkPage() {
                   />
                 </div>
 
-                {/* Text & Icon Section */}
-                <div className="mt-3.5 flex items-start justify-between gap-2 px-0.5">
-                  <span className="text-[#2f4b2f] text-[15px] font-bold leading-snug line-clamp-2">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[#2f4b2f] text-[15px] font-bold leading-snug">
                     {place.name}
-                  </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeBookmark(place.slug);
-                    }}
-                    className="flex-shrink-0 mt-0.5"
-                  >
-                    <Bookmark
-                      size={18}
-                      className="text-[#2f4b2f] fill-[#2f4b2f]"
-                    />
-                  </button>
+                  </p>
+                  <p className="text-gray-400 text-[12px] mt-0.5">
+                    {place.type}
+                  </p>
                 </div>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeBookmark(place.slug);
+                  }}
+                  className="flex-shrink-0"
+                >
+                  <Bookmark
+                    size={18}
+                    className="text-[#2f4b2f] fill-[#2f4b2f]"
+                  />
+                </button>
               </div>
             ))}
           </div>

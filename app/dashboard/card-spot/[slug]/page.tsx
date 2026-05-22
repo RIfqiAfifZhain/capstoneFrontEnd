@@ -118,7 +118,7 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
                 <button
                   onClick={handleSubmit}
                   disabled={!rating || !text.trim()}
-                  className="bg-[#2f4b2f] text-white text-[13px] font-bold px-6 py-2.5 rounded-xl hover:bg-[#3d6b3d] disabled:opacity-40 transition-all"
+                  className="bg-[#2f4b2f] text-white text-[13px] font-bold px-6 py-2.5 rounded-lg hover:bg-[#3d6b3d] disabled:opacity-40 transition-all"
                 >
                   Submit
                 </button>
@@ -308,7 +308,7 @@ export default function SpotDetailPage() {
 
         <button
           onClick={() => window.open(place.mapLink, "_blank")}
-          className="mt-6 mb-12 flex items-center gap-2 bg-[#2f4b2f] text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-[#3d6b3d] transition-all"
+          className="mt-6 mb-12 flex items-center gap-2 bg-[#2f4b2f] text-white text-sm font-bold px-6 py-2.5 rounded-lg hover:bg-[#3d6b3d] transition-all"
         >
           Go There <ArrowRight size={16} />
         </button>
@@ -319,7 +319,7 @@ export default function SpotDetailPage() {
           </h2>
           <button
             onClick={() => setShowReview(true)}
-            className="flex items-center gap-1.5 bg-[#2f4b2f] text-white text-[11px] font-bold px-4 py-2 rounded-xl hover:bg-[#3d6b3d] transition-all"
+            className="flex items-center gap-1.5 bg-[#2f4b2f] text-white text-[11px] font-bold px-4 py-2 rounded-lg hover:bg-[#3d6b3d] transition-all"
           >
             Write a Review
             <svg

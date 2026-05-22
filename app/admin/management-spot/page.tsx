@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Search, Plus, Pencil, Trash2, Save, Upload } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Plus, Pencil, Trash2, Save, Upload, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-// ─── Types ──
 
 type Spot = {
   id: number;
@@ -23,8 +21,6 @@ type Spot = {
 
 type ModalMode = "add" | "edit" | null;
 
-// ─── Initial data ───
-
 const INITIAL_SPOTS: Spot[] = [
   {
     id: 1,
@@ -33,7 +29,8 @@ const INITIAL_SPOTS: Spot[] = [
     category: "park",
     address: "Jl. H. Kamang No.38, RT.5/RW.10, Pd. Labu, Kec. Ciland...",
     coordinates: "-6.30797 106.79062",
-    description: "Museum unik yang menyimpan koleksi ribuan layang-layang dari berbagai penjuru nusantara dan dunia.",
+    description:
+      "Museum unik yang menyimpan koleksi ribuan layang-layang dari berbagai penjuru nusantara dan dunia.",
     facilities: ["Indoor", "Quiet"],
     crowdedness: ["Low"],
     openHour: "09:00",
@@ -112,11 +109,19 @@ const INITIAL_SPOTS: Spot[] = [
   },
 ];
 
-const FACILITIES = ["Indoor", "Busy", "Groups", "Relaxed", "Outdoor", "Quiet", "Alone", "Focused"];
+const FACILITIES = [
+  "Indoor",
+  "Busy",
+  "Groups",
+  "Relaxed",
+  "Outdoor",
+  "Quiet",
+  "Alone",
+  "Focused",
+];
 const CROWDEDNESS = ["Low", "High"];
 const CATEGORIES = ["cafe", "library", "park"];
 
-// ── Input style ────
 const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "10px 14px",
@@ -127,37 +132,21 @@ const inputStyle: React.CSSProperties = {
   color: "#333",
   outline: "none",
   boxSizing: "border-box",
-  fontStyle: "normal",
 };
-
-// ─── Shared Topbar ────
 
 function Topbar() {
   const router = useRouter();
   return (
-    <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 40px" }}>
-      <div style={{ flex: 1, marginRight: "24px", position: "relative" }}>
-        <input
-          placeholder="Find your quiet spot..."
-          style={{
-            width: "100%",
-            padding: "10px 40px 10px 16px",
-            borderRadius: "50px",
-            border: "1px solid #E0D8D0",
-            backgroundColor: "#F0EAE4",
-            fontSize: "13px",
-            color: "#555",
-            outline: "none",
-            boxSizing: "border-box",
-            fontStyle: "normal",
-          }}
-        />
-        <Search size={16} style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", color: "#999" }} />
-      </div>
-
-      {/* Avatar */}
+    <header
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        padding: "20px 40px",
+      }}
+    >
       <button
-        onClick={() => router.push("/admin/profile")}
+        onClick={() => router.push("/admin/profile-admin")}
         style={{
           display: "flex",
           alignItems: "center",
@@ -172,8 +161,18 @@ function Topbar() {
         onMouseEnter={(e) => (e.currentTarget.style.background = "#F0EAE4")}
         onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
       >
-        <span style={{ fontSize: "13px", color: "#555", fontWeight: "500" }}>Aisyah Rahma</span>
-        <div style={{ width: "36px", height: "36px", borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
+        <span style={{ fontSize: "13px", color: "#555", fontWeight: "500" }}>
+          Aisyah Rahma
+        </span>
+        <div
+          style={{
+            width: "36px",
+            height: "36px",
+            borderRadius: "50%",
+            overflow: "hidden",
+            flexShrink: 0,
+          }}
+        >
           <img
             src="/profilepic.jpg"
             alt="Avatar"
@@ -185,9 +184,13 @@ function Topbar() {
   );
 }
 
-// ─── SaveSuccessModal ─────
-
-function SaveSuccessModal({ name, onBack }: { name: string; onBack: () => void }) {
+function SaveSuccessModal({
+  name,
+  onBack,
+}: {
+  name: string;
+  onBack: () => void;
+}) {
   return (
     <div
       style={{
@@ -222,17 +225,59 @@ function SaveSuccessModal({ name, onBack }: { name: string; onBack: () => void }
             justifyContent: "center",
           }}
         >
-          <div style={{ position: "absolute", inset: 0, backgroundColor: "#EFEFEF", borderRadius: "14px" }} />
-          <svg viewBox="0 0 40 40" fill="none" width="36" height="36" style={{ position: "relative", zIndex: 1 }}>
-            <polyline points="6,21 16,31 34,11" stroke="#2D6A4F" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            <line x1="6" y1="36" x2="34" y2="36" stroke="#2D6A4F" strokeWidth="2.5" strokeLinecap="round" />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundColor: "#EFEFEF",
+              borderRadius: "14px",
+            }}
+          />
+          <svg
+            viewBox="0 0 40 40"
+            fill="none"
+            width="36"
+            height="36"
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            <polyline
+              points="6,21 16,31 34,11"
+              stroke="#2D6A4F"
+              strokeWidth="2.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+            <line
+              x1="6"
+              y1="36"
+              x2="34"
+              y2="36"
+              stroke="#2D6A4F"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
           </svg>
         </div>
-        <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#111", marginBottom: "12px" }}>
+        <h3
+          style={{
+            fontSize: "18px",
+            fontWeight: "700",
+            color: "#111",
+            marginBottom: "12px",
+          }}
+        >
           All Changes Saved!
         </h3>
-        <p style={{ fontSize: "12px", color: "#131B11", lineHeight: 1.75, marginBottom: "28px" }}>
-          Data for <strong>{name}</strong> has been updated and safely stored in your database.
+        <p
+          style={{
+            fontSize: "12px",
+            color: "#131B11",
+            lineHeight: 1.75,
+            marginBottom: "28px",
+          }}
+        >
+          Data for <strong>{name}</strong> has been updated.
         </p>
         <button
           onClick={onBack}
@@ -246,8 +291,14 @@ function SaveSuccessModal({ name, onBack }: { name: string; onBack: () => void }
             fontSize: "13px",
             fontWeight: "600",
             cursor: "pointer",
-            fontFamily: "'DM Sans', sans-serif",
+            transition: "background-color 0.15s ease",
           }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor = "#3d6b3d")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "#2D4A2D")
+          }
         >
           Back to Management Spot
         </button>
@@ -256,9 +307,15 @@ function SaveSuccessModal({ name, onBack }: { name: string; onBack: () => void }
   );
 }
 
-// ─── DeleteModal ────
-
-function DeleteModal({ spot, onConfirm, onCancel }: { spot: Spot; onConfirm: () => void; onCancel: () => void }) {
+function DeleteModal({
+  spot,
+  onConfirm,
+  onCancel,
+}: {
+  spot: Spot;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
   return (
     <div
       style={{
@@ -293,39 +350,106 @@ function DeleteModal({ spot, onConfirm, onCancel }: { spot: Spot; onConfirm: () 
             justifyContent: "center",
           }}
         >
-          <div style={{ position: "absolute", inset: 0, backgroundColor: "#FDECEA", borderRadius: "14px" }} />
-          <svg viewBox="0 0 40 36" fill="none" width="36" height="36" style={{ position: "relative", zIndex: 1 }}>
-            <path d="M20 2L2 34h36L20 2z" stroke="#C0392B" strokeWidth="2" strokeLinejoin="round" fill="none" />
-            <line x1="20" y1="14" x2="20" y2="24" stroke="#C0392B" strokeWidth="2" strokeLinecap="round" />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundColor: "#FDECEA",
+              borderRadius: "14px",
+            }}
+          />
+          <svg
+            viewBox="0 0 40 36"
+            fill="none"
+            width="36"
+            height="36"
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            <path
+              d="M20 2L2 34h36L20 2z"
+              stroke="#C0392B"
+              strokeWidth="2"
+              strokeLinejoin="round"
+              fill="none"
+            />
+            <line
+              x1="20"
+              y1="14"
+              x2="20"
+              y2="24"
+              stroke="#C0392B"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
             <circle cx="20" cy="29" r="1.2" fill="#C0392B" />
           </svg>
         </div>
-        <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#111", marginBottom: "12px", lineHeight: 1.35 }}>
-          Are you sure want to<br />delete this spot?
+        <h3
+          style={{
+            fontSize: "18px",
+            fontWeight: "700",
+            color: "#111",
+            marginBottom: "12px",
+          }}
+        >
+          Delete this spot?
         </h3>
-        <p style={{ fontSize: "12px", color: "#131B11", lineHeight: 1.75, marginBottom: "28px" }}>
-          You are about to permanently delete {spot.name}. All booking history, analytics, and associated metadata will be lost. This action cannot be undone.
+        <p
+          style={{
+            fontSize: "12px",
+            color: "#131B11",
+            lineHeight: 1.75,
+            marginBottom: "28px",
+          }}
+        >
+          Confirm to delete {spot.name}.
         </p>
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             onClick={onCancel}
             style={{
-              flex: 1, padding: "13px", borderRadius: "12px", border: "none",
-              backgroundColor: "#FDECEA", color: "#C0392B", fontSize: "13px",
-              fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+              flex: 1,
+              padding: "13px",
+              borderRadius: "12px",
+              border: "none",
+              backgroundColor: "#FDECEA",
+              color: "#C0392B",
+              fontSize: "13px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "background-color 0.15s ease",
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#fad7d4")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#FDECEA")
+            }
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             style={{
-              flex: 1, padding: "13px", borderRadius: "12px", border: "none",
-              backgroundColor: "#7B1F1F", color: "#fff", fontSize: "13px",
-              fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+              flex: 1,
+              padding: "13px",
+              borderRadius: "12px",
+              border: "none",
+              backgroundColor: "#8B1A1A",
+              color: "#fff",
+              fontSize: "13px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "background-color 0.15s ease",
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#a52a2a")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#8B1A1A")
+            }
           >
-            Confirm Delete
+            Delete
           </button>
         </div>
       </div>
@@ -333,9 +457,13 @@ function DeleteModal({ spot, onConfirm, onCancel }: { spot: Spot; onConfirm: () 
   );
 }
 
-// ─── DeleteSuccessModal ────
-
-function DeleteSuccessModal({ name, onBack }: { name: string; onBack: () => void }) {
+function DeleteSuccessModal({
+  name,
+  onBack,
+}: {
+  name: string;
+  onBack: () => void;
+}) {
   return (
     <div
       style={{
@@ -359,45 +487,53 @@ function DeleteSuccessModal({ name, onBack }: { name: string; onBack: () => void
           boxShadow: "0 24px 64px rgba(0,0,0,0.25)",
         }}
       >
-        <div
+        <h3
           style={{
-            margin: "0 auto 20px",
-            width: "64px",
-            height: "64px",
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            fontSize: "18px",
+            fontWeight: "700",
+            color: "#111",
+            marginBottom: "12px",
           }}
         >
-          <div style={{ position: "absolute", inset: 0, backgroundColor: "#EFEFEF", borderRadius: "14px" }} />
-          <svg viewBox="0 0 40 40" fill="none" width="36" height="36" style={{ position: "relative", zIndex: 1 }}>
-            <polyline points="6,21 16,31 34,11" stroke="#2D6A4F" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            <line x1="6" y1="36" x2="34" y2="36" stroke="#2D6A4F" strokeWidth="2.5" strokeLinecap="round" />
-          </svg>
-        </div>
-        <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#111", marginBottom: "12px" }}>
-          All Done! Spot is Gone
+          Done!
         </h3>
-        <p style={{ fontSize: "12px", color: "#131B11", lineHeight: 1.75, marginBottom: "28px" }}>
-          &apos;{name}&apos; has been successfully deleted. Nothing left to do here.
+        <p
+          style={{
+            fontSize: "12px",
+            color: "#131B11",
+            lineHeight: 1.75,
+            marginBottom: "28px",
+          }}
+        >
+          &apos;{name}&apos; has been deleted.
         </p>
         <button
           onClick={onBack}
           style={{
-            width: "100%", padding: "14px", borderRadius: "12px", border: "none",
-            backgroundColor: "#2D4A2D", color: "#fff", fontSize: "13px",
-            fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+            width: "100%",
+            padding: "14px",
+            borderRadius: "7px",
+            border: "none",
+            backgroundColor: "#2D4A2D",
+            color: "#fff",
+            fontSize: "13px",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "background-color 0.15s ease",
           }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor = "#3d6b3d")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "#2D4A2D")
+          }
         >
-          Back to Management Spot
+          Back to Management
         </button>
       </div>
     </div>
   );
 }
-
-// ─── SpotForm ──────
 
 function SpotForm({
   initial,
@@ -441,13 +577,6 @@ function SpotForm({
     reader.readAsDataURL(file);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleImageFile(file);
-  };
-
   const fieldBox: React.CSSProperties = {
     backgroundColor: "#FFFFFF",
     borderRadius: "10px",
@@ -456,21 +585,49 @@ function SpotForm({
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#FAF5F0", display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#FAF5F0",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Topbar />
-
       <main style={{ padding: "8px 40px 60px", flex: 1 }}>
-        <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#1A2E1A", fontFamily: "'DM Sans', sans-serif", marginBottom: "4px" }}>
+        <h2
+          style={{
+            fontSize: "22px",
+            fontWeight: "700",
+            color: "#1A2E1A",
+            marginBottom: "4px",
+          }}
+        >
           {mode === "add" ? "Add New Spot" : "Edit Spot"}
         </h2>
         <p style={{ fontSize: "13px", color: "#283B24", marginBottom: "28px" }}>
-          {mode === "add" ? "Register a new location within the Sanctuary network." : "Update anything you want to."}
+          Update spot information here.
         </p>
 
-        {/* Row 1 */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "18px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "20px",
+            marginBottom: "18px",
+          }}
+        >
           <div>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "6px" }}>Spot Name</label>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "6px",
+              }}
+            >
+              Spot Name
+            </label>
             <div style={fieldBox}>
               <input
                 value={form.name}
@@ -481,26 +638,73 @@ function SpotForm({
             </div>
           </div>
           <div>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "6px" }}>Category</label>
-            <div style={fieldBox}>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "6px",
+              }}
+            >
+              Category
+            </label>
+            <div
+              style={{
+                ...fieldBox,
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}
+                style={{
+                  ...inputStyle,
+                  appearance: "none",
+                  cursor: "pointer",
+                  paddingRight: "36px",
+                }}
               >
                 <option value="">Select a category</option>
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                  <option key={c} value={c}>
+                    {c.charAt(0).toUpperCase() + c.slice(1)}
+                  </option>
                 ))}
               </select>
+              <ChevronDown
+                size={16}
+                style={{
+                  position: "absolute",
+                  right: "14px",
+                  color: "#666",
+                  pointerEvents: "none",
+                }}
+              />
             </div>
           </div>
         </div>
 
-        {/* Row 2 */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "18px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "20px",
+            marginBottom: "18px",
+          }}
+        >
           <div>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "6px" }}>Address</label>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "6px",
+              }}
+            >
+              Address
+            </label>
             <div style={fieldBox}>
               <input
                 value={form.address}
@@ -511,11 +715,22 @@ function SpotForm({
             </div>
           </div>
           <div>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "6px" }}>Coordinates</label>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "6px",
+              }}
+            >
+              Coordinates
+            </label>
             <div style={fieldBox}>
               <input
                 value={form.coordinates}
-                onChange={(e) => setForm({ ...form, coordinates: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, coordinates: e.target.value })
+                }
                 placeholder="Lat, Long"
                 style={inputStyle}
               />
@@ -523,37 +738,79 @@ function SpotForm({
           </div>
         </div>
 
-        {/* Description */}
         <div style={{ marginBottom: "18px" }}>
-          <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "6px" }}>Description</label>
+          <label
+            style={{
+              fontSize: "13px",
+              fontWeight: "600",
+              display: "block",
+              marginBottom: "6px",
+            }}
+          >
+            Description
+          </label>
           <div style={fieldBox}>
             <textarea
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Describe the atmosphere, mood, and unique features of this spot..."
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              placeholder="Describe the atmosphere..."
               rows={5}
               style={{ ...inputStyle, resize: "vertical" }}
             />
           </div>
         </div>
 
-        {/* Facilities & Crowdedness */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "18px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "20px",
+            marginBottom: "18px",
+          }}
+        >
           <div>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "8px" }}>Facilities</label>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
+              Facilities
+            </label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
               {FACILITIES.map((f) => {
                 const active = form.facilities.includes(f);
                 return (
                   <button
                     key={f}
-                    onClick={() => setForm({ ...form, facilities: toggleTag(form.facilities, f) })}
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        facilities: toggleTag(form.facilities, f),
+                      })
+                    }
                     style={{
-                      padding: "5px 12px", borderRadius: "20px",
+                      padding: "5px 12px",
+                      borderRadius: "20px",
                       border: `1px solid ${active ? "transparent" : "#C8B8A8"}`,
                       backgroundColor: active ? "#2D4A2D" : "transparent",
                       color: active ? "#fff" : "#555",
-                      fontSize: "12px", fontWeight: "500", cursor: "pointer", transition: "all 0.15s",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!active)
+                        e.currentTarget.style.backgroundColor = "#f0efeb";
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active)
+                        e.currentTarget.style.backgroundColor = "transparent";
                     }}
                   >
                     {f}
@@ -563,20 +820,46 @@ function SpotForm({
             </div>
           </div>
           <div>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "8px" }}>Crowdedness</label>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
+              Crowdedness
+            </label>
             <div style={{ display: "flex", gap: "8px" }}>
               {CROWDEDNESS.map((c) => {
                 const active = form.crowdedness.includes(c);
                 return (
                   <button
                     key={c}
-                    onClick={() => setForm({ ...form, crowdedness: toggleTag(form.crowdedness, c) })}
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        crowdedness: toggleTag(form.crowdedness, c),
+                      })
+                    }
                     style={{
-                      padding: "5px 16px", borderRadius: "20px",
+                      padding: "5px 16px",
+                      borderRadius: "20px",
                       border: `1px solid ${active ? "transparent" : "#C8B8A8"}`,
                       backgroundColor: active ? "#2D4A2D" : "transparent",
                       color: active ? "#fff" : "#555",
-                      fontSize: "12px", fontWeight: "500", cursor: "pointer", transition: "all 0.15s",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!active)
+                        e.currentTarget.style.backgroundColor = "#f0efeb";
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active)
+                        e.currentTarget.style.backgroundColor = "transparent";
                     }}
                   >
                     {c}
@@ -587,22 +870,69 @@ function SpotForm({
           </div>
         </div>
 
-        {/* Operating Hours */}
-        <div style={{ marginBottom: "18px" }}>
-          <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "8px" }}>Operating Hours</label>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "16px",
+            marginBottom: "18px",
+          }}
+        >
+          <div>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
+              Open Hour
+            </label>
             <div style={fieldBox}>
-              <input type="time" value={form.openHour} onChange={(e) => setForm({ ...form, openHour: e.target.value })} style={inputStyle} />
+              <input
+                type="time"
+                value={form.openHour}
+                onChange={(e) => setForm({ ...form, openHour: e.target.value })}
+                style={inputStyle}
+              />
             </div>
+          </div>
+          <div>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
+              Close Hour
+            </label>
             <div style={fieldBox}>
-              <input type="time" value={form.closeHour} onChange={(e) => setForm({ ...form, closeHour: e.target.value })} style={inputStyle} />
+              <input
+                type="time"
+                value={form.closeHour}
+                onChange={(e) =>
+                  setForm({ ...form, closeHour: e.target.value })
+                }
+                style={inputStyle}
+              />
             </div>
           </div>
         </div>
 
-        {/* Spot Image */}
         <div style={{ marginBottom: "28px" }}>
-          <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "8px" }}>Spot Image</label>
+          <label
+            style={{
+              fontSize: "13px",
+              fontWeight: "600",
+              display: "block",
+              marginBottom: "8px",
+            }}
+          >
+            Spot Image
+          </label>
           <input
             ref={fileInputRef}
             type="file"
@@ -615,18 +945,12 @@ function SpotForm({
           />
           <div
             onClick={() => fileInputRef.current?.click()}
-            onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
-            onDragLeave={() => setIsDragOver(false)}
-            onDrop={handleDrop}
             style={{
               borderRadius: "12px",
-              backgroundColor: isDragOver ? "#EEF3EE" : "#FFFFFF",
-              boxShadow: isDragOver
-                ? "0 0 0 2px #2D4A2D inset, 0 1px 4px rgba(0,0,0,0.06)"
-                : "0 1px 4px rgba(0,0,0,0.06)",
+              backgroundColor: "#FFFFFF",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
               cursor: "pointer",
               overflow: "hidden",
-              transition: "all 0.15s",
               minHeight: "160px",
               position: "relative",
               display: "flex",
@@ -636,50 +960,73 @@ function SpotForm({
             }}
           >
             {imagePreview ? (
-              <>
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  style={{ width: "100%", maxHeight: "220px", objectFit: "cover", display: "block" }}
-                />
-                <div
-                  style={{
-                    position: "absolute", bottom: "10px", right: "12px",
-                    backgroundColor: "rgba(0,0,0,0.55)", color: "#fff",
-                    fontSize: "11px", padding: "4px 10px", borderRadius: "20px",
-                  }}
-                >
-                  Click to change
-                </div>
-              </>
+              <img
+                src={imagePreview}
+                alt="Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "220px",
+                  objectFit: "cover",
+                }}
+              />
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <div style={{ textAlign: "center" }}>
                 <Upload size={28} color="#C8B8A8" />
-                <p style={{ fontSize: "13px", color: "#AAA", margin: 0 }}>Drop your image here</p>
-                <p style={{ fontSize: "11px", color: "#CCC", margin: 0 }}>or click to browse</p>
+                <p style={{ fontSize: "13px", color: "#AAA" }}>
+                  Click to upload image
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Buttons */}
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+        <div
+          style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}
+        >
           <button
             onClick={onCancel}
             style={{
-              padding: "10px 28px", borderRadius: "8px", border: "1px solid #E0D8D0",
-              backgroundColor: "#F5EDE8", color: "#888", fontSize: "14px", fontWeight: "500", cursor: "pointer",
+              padding: "10px 28px",
+              borderRadius: "8px",
+              border: "1px solid #E0D8D0",
+              backgroundColor: "#F5EDE8",
+              color: "#888",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "background-color 0.15s ease",
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#ede0d4")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#F5EDE8")
+            }
           >
             Cancel
           </button>
           <button
             onClick={() => onSave(form, form.name)}
             style={{
-              padding: "10px 28px", borderRadius: "8px", border: "none",
-              backgroundColor: "#2D4A2D", color: "#FFFFFF", fontSize: "14px", fontWeight: "600",
-              cursor: "pointer", display: "flex", alignItems: "center", gap: "8px",
+              padding: "10px 28px",
+              borderRadius: "8px",
+              border: "none",
+              backgroundColor: "#2D4A2D",
+              color: "#FFFFFF",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "background-color 0.15s ease",
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#3d6b3d")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#2D4A2D")
+            }
           >
             <Save size={15} />
             Save Spot
@@ -690,26 +1037,6 @@ function SpotForm({
   );
 }
 
-// ─── BoxPlusIcon ────
-
-function BoxPlusIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect x="1" y="1" width="14" height="14" rx="3" stroke="white" strokeWidth="1.5" fill="none" />
-      <line x1="8" y1="4.5" x2="8" y2="11.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="4.5" y1="8" x2="11.5" y2="8" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-// ─── Main Page ───────
-
 export default function ManagementSpotPage() {
   const [spots, setSpots] = useState<Spot[]>(INITIAL_SPOTS);
   const [view, setView] = useState<"list" | "form">("list");
@@ -718,115 +1045,212 @@ export default function ManagementSpotPage() {
   const [deleteTarget, setDeleteTarget] = useState<Spot | null>(null);
   const [deletedName, setDeletedName] = useState<string | null>(null);
   const [savedName, setSavedName] = useState<string | null>(null);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
   let nextId = Math.max(...spots.map((s) => s.id), 0) + 1;
 
-  const handleAddClick = () => {
-    setEditingSpot(null);
-    setFormMode("add");
-    setView("form");
-  };
-
-  const handleEditClick = (spot: Spot) => {
-    setEditingSpot(spot);
-    setFormMode("edit");
-    setView("form");
-  };
-
-  const handleSave = (data: Omit<Spot, "id">, spotName: string) => {
-    if (formMode === "add") {
-      setSpots((prev) => [{ ...data, id: nextId++ }, ...prev]);
-    } else if (formMode === "edit" && editingSpot) {
-      setSpots((prev) => prev.map((s) => (s.id === editingSpot.id ? { ...data, id: s.id } : s)));
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") {
+      router.replace("/auth");
+    } else {
+      setIsAuthorized(true);
     }
-    setView("list");
-    setFormMode(null);
-    setEditingSpot(null);
-    setSavedName(spotName || "Spot");
-  };
+  }, [router]);
 
-  const handleDeleteClick = (spot: Spot) => setDeleteTarget(spot);
-
-  const handleConfirmDelete = () => {
-    if (!deleteTarget) return;
-    const name = deleteTarget.name;
-    setSpots((prev) => prev.filter((s) => s.id !== deleteTarget.id));
-    setDeleteTarget(null);
-    setDeletedName(name);
-  };
+  if (!isAuthorized) return null;
 
   if (view === "form") {
     return (
       <SpotForm
         initial={editingSpot ?? {}}
-        onSave={handleSave}
-        onCancel={() => { setView("list"); setFormMode(null); setEditingSpot(null); }}
+        onSave={(data, name) => {
+          if (formMode === "add") {
+            setSpots((prev) => [{ ...data, id: nextId++ }, ...prev]);
+          } else if (formMode === "edit" && editingSpot) {
+            setSpots((prev) =>
+              prev.map((s) =>
+                s.id === editingSpot.id ? { ...data, id: s.id } : s,
+              ),
+            );
+          }
+          setView("list");
+          setFormMode(null);
+          setEditingSpot(null);
+          setSavedName(name || "Spot");
+        }}
+        onCancel={() => {
+          setView("list");
+          setFormMode(null);
+          setEditingSpot(null);
+        }}
         mode={formMode}
       />
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#FAF5F0", display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#FAF5F0",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Topbar />
-
       <main style={{ padding: "8px 40px 40px", flex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "24px",
+          }}
+        >
           <div>
-            <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#1A2E1A", fontFamily: "'DM Sans', sans-serif", marginBottom: "4px" }}>
+            <h2
+              style={{ fontSize: "22px", fontWeight: "700", color: "#1A2E1A" }}
+            >
               Hello, Admin!
             </h2>
-            <p style={{ fontSize: "13px", color: "#354E30" }}>What would you do today?</p>
+            <p style={{ fontSize: "13px", color: "#354E30" }}>
+              What would you do today?
+            </p>
           </div>
-
-          {/* Add Spot button */}
           <button
-            onClick={handleAddClick}
-            style={{
-              display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px",
-              borderRadius: "8px", border: "none", backgroundColor: "#2D4A2D",
-              color: "#fff", fontSize: "13px", fontWeight: "600", cursor: "pointer",
+            onClick={() => {
+              setEditingSpot(null);
+              setFormMode("add");
+              setView("form");
             }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "none",
+              backgroundColor: "#2D4A2D",
+              color: "#fff",
+              fontSize: "13px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "background-color 0.15s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#3d6b3d")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#2D4A2D")
+            }
           >
-            <BoxPlusIcon />
+            <Plus size={16} />
             Add Spot
           </button>
         </div>
 
-        {/* Spot List */}
-        <div style={{ backgroundColor: "#fff", border: "1px solid #EDE8E2", borderRadius: "14px", overflow: "hidden" }}>
+        <div
+          style={{
+            backgroundColor: "#fff",
+            border: "1px solid #EDE8E2",
+            borderRadius: "14px",
+            overflow: "hidden",
+          }}
+        >
           {spots.map((spot, i) => (
             <div
               key={spot.id}
               style={{
-                display: "flex", alignItems: "center", gap: "16px", padding: "16px 20px",
-                borderBottom: i < spots.length - 1 ? "1px solid #F0EAE4" : "none",
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                padding: "16px 20px",
+                borderBottom:
+                  i < spots.length - 1 ? "1px solid #F0EAE4" : "none",
               }}
             >
-              <div style={{ width: "60px", height: "60px", borderRadius: "10px", overflow: "hidden", flexShrink: 0, backgroundColor: "#E8DDD4" }}>
-                <img src={spot.img} alt={spot.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <div
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  flexShrink: 0,
+                  backgroundColor: "#E8DDD4",
+                }}
+              >
+                <img
+                  src={spot.img}
+                  alt={spot.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: "14px", fontWeight: "600", color: "#1A2E1A", marginBottom: "2px" }}>{spot.name}</div>
-                <div style={{ fontSize: "12px", color: "#999" }}>{spot.location}</div>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    color: "#1A2E1A",
+                  }}
+                >
+                  {spot.name}
+                </div>
+                <div style={{ fontSize: "12px", color: "#999" }}>
+                  {spot.location}
+                </div>
               </div>
               <div style={{ display: "flex", gap: "8px" }}>
                 <button
-                  onClick={() => handleEditClick(spot)}
-                  style={{
-                    width: "36px", height: "36px", borderRadius: "8px", border: "none",
-                    backgroundColor: "#2D4A2D", color: "#fff", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                  onClick={() => {
+                    setEditingSpot(spot);
+                    setFormMode("edit");
+                    setView("form");
                   }}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "8px",
+                    border: "none",
+                    backgroundColor: "#2D4A2D",
+                    color: "#fff",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "background-color 0.15s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#3d6b3d")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#2D4A2D")
+                  }
                 >
                   <Pencil size={14} />
                 </button>
                 <button
-                  onClick={() => handleDeleteClick(spot)}
+                  onClick={() => setDeleteTarget(spot)}
                   style={{
-                    width: "36px", height: "36px", borderRadius: "8px", border: "none",
-                    backgroundColor: "#8B1A1A", color: "#fff", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "8px",
+                    border: "none",
+                    backgroundColor: "#8B1A1A",
+                    color: "#fff",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "background-color 0.15s ease",
                   }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#a52a2a")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#8B1A1A")
+                  }
                 >
                   <Trash2 size={14} />
                 </button>
@@ -836,20 +1260,27 @@ export default function ManagementSpotPage() {
         </div>
       </main>
 
-      {/* Save Success Modal */}
-      {savedName && <SaveSuccessModal name={savedName} onBack={() => setSavedName(null)} />}
-
-      {/* Delete Confirmation Modal */}
+      {savedName && (
+        <SaveSuccessModal name={savedName} onBack={() => setSavedName(null)} />
+      )}
       {deleteTarget && (
         <DeleteModal
           spot={deleteTarget}
-          onConfirm={handleConfirmDelete}
+          onConfirm={() => {
+            const name = deleteTarget.name;
+            setSpots((prev) => prev.filter((s) => s.id !== deleteTarget.id));
+            setDeleteTarget(null);
+            setDeletedName(name);
+          }}
           onCancel={() => setDeleteTarget(null)}
         />
       )}
-
-      {/* Delete Success Modal */}
-      {deletedName && <DeleteSuccessModal name={deletedName} onBack={() => setDeletedName(null)} />}
+      {deletedName && (
+        <DeleteSuccessModal
+          name={deletedName}
+          onBack={() => setDeletedName(null)}
+        />
+      )}
     </div>
   );
 }
