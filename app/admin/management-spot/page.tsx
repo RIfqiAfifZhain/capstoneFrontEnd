@@ -967,12 +967,21 @@ function SpotForm({
                   width: "100%",
                   maxHeight: "220px",
                   objectFit: "cover",
+                  display: "block",
                 }}
               />
             ) : (
-              <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                }}
+              >
                 <Upload size={28} color="#C8B8A8" />
-                <p style={{ fontSize: "13px", color: "#AAA" }}>
+                <p style={{ fontSize: "13px", color: "#AAA", margin: 0 }}>
                   Click to upload image
                 </p>
               </div>
