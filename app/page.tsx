@@ -123,7 +123,7 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
-              href="/auth"
+              href="/auth?mode=signin"
               className="text-sm font-medium text-[#354e30] hover:text-[#202f1d] px-2 py-1.5 transition"
             >
               Sign In

@@ -1,14 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ArrowLeft } from "lucide-react";
 
 export default function AuthPage() {
-  const [isSignUp, setIsSignUp] = useState(true);
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#FAF5F0] text-sm text-[#354e30] font-medium">
+          Loading...
+        </div>
+      }
+    >
+      <AuthContent />
+    </Suspense>
+  );
+}
+
+function AuthContent() {
+  const searchParams = useSearchParams();
+  // Otomatis menentukan Sign Up / Sign In berdasarkan query params (?mode=signin)
+  const [isSignUp, setIsSignUp] = useState(
+    searchParams.get("mode") !== "signin",
+  );
 
   return (
     <main className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -56,7 +74,6 @@ function AuthCard({
 
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-    // Menentukan endpoint API Swagger secara dinamis berdasarkan input email
     let endpoint = "";
     const isAdminEmail = email.toLowerCase().includes("admin");
 
@@ -100,7 +117,6 @@ function AuthCard({
             localStorage.setItem("email", email);
           }
 
-          // Menyimpan penanda hak akses (role) ke localStorage berdasarkan endpoint yang ditembak
           if (isAdminEmail) {
             localStorage.setItem("role", "admin");
             router.push("/admin");
